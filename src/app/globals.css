@@ -1,8 +1,7 @@
 /* src/app/globals.css */
 @import "tailwindcss";
 
-
-/* Custom variables if you want (optional) */
+/* Global Variables */
 :root {
   --color-bg: #f7f7f7;
   --color-text: #182b3a;
@@ -10,11 +9,54 @@
   --color-footer-bg: #1b1d1e;
 }
 
-/* Global body style */
+/* src/app/globals.css */
+html,
 body {
-  background-color: #f7f7f7;
-  color: #182b3a;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden; /* ✅ Must be here */
+  background-color: var(--color-bg);
+  color: var(--color-text);
   font-family: Helvetica, Arial, sans-serif;
 }
 
 
+/* Active link underline animation */
+.active-nav {
+  color: #f97316; /* Tailwind's orange-400 */
+  position: relative;
+}
+
+.active-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #f97316 0%,
+    transparent 25%,
+    #f97316 50%,
+    transparent 75%,
+    #f97316 100%
+  );
+  animation: glowLine 1.2s ease-in-out infinite;
+}
+
+@keyframes glowLine {
+  0% {
+    opacity: 0.5;
+    filter: blur(1px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 0.5;
+    filter: blur(1px);
+  }
+}
