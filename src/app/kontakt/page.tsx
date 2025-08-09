@@ -20,76 +20,77 @@ export default function KontaktPage() {
         </p>
 
         {/* Form */}
-        <form className="bg-black/60 backdrop-blur-md p-6 rounded-lg shadow-lg border border-orange-400/40 shadow-orange-500/20 space-y-6">
+        <form className="bg-black/35 p-6 rounded-lg border border-[#e6dfd0]/40 shadow-none space-y-6">
           {/* Name fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2 font-medium">Vorname *</label>
+              <label className="block mb-2 font-medium text-white/85">Vorname *</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2 rounded-md bg-transparent border border-orange-400/60 shadow-md shadow-orange-500/30 focus:border-orange-400 focus:shadow-orange-500 focus:shadow-lg outline-none transition"
+                className="w-full px-4 py-2 rounded-md bg-transparent border border-[#e6dfd0]/50 focus:border-[#8aa9c0] focus:ring-2 focus:ring-[#8aa9c0]/30 outline-none transition"
               />
             </div>
             <div>
-              <label className="block mb-2 font-medium">Nachname *</label>
+              <label className="block mb-2 font-medium text-white/85">Nachname *</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2 rounded-md bg-transparent border border-orange-400/60 shadow-md shadow-orange-500/30 focus:border-orange-400 focus:shadow-orange-500 focus:shadow-lg outline-none transition"
+                className="w-full px-4 py-2 rounded-md bg-transparent border border-[#e6dfd0]/50 focus:border-[#8aa9c0] focus:ring-2 focus:ring-[#8aa9c0]/30 outline-none transition"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="block mb-2 font-medium">E-Mail *</label>
+            <label className="block mb-2 font-medium text-white/85">E‑Mail *</label>
             <input
               type="email"
               required
-              className="w-full px-4 py-2 rounded-md bg-transparent border border-orange-400/60 shadow-md shadow-orange-500/30 focus:border-orange-400 focus:shadow-orange-500 focus:shadow-lg outline-none transition"
+              className="w-full px-4 py-2 rounded-md bg-transparent border border-[#e6dfd0]/50 focus:border-[#8aa9c0] focus:ring-2 focus:ring-[#8aa9c0]/30 outline-none transition"
             />
           </div>
 
-          {/* Phone (optional) */}
+          {/* Phone */}
           <div>
-            <label className="block mb-2 font-medium">Telefonnummer (optional)</label>
+            <label className="block mb-2 font-medium text-white/85">Telefonnummer (optional)</label>
             <input
               type="tel"
-              className="w-full px-4 py-2 rounded-md bg-transparent border border-orange-400/60 shadow-md shadow-orange-500/30 focus:border-orange-400 focus:shadow-orange-500 focus:shadow-lg outline-none transition"
+              className="w-full px-4 py-2 rounded-md bg-transparent border border-[#e6dfd0]/50 focus:border-[#8aa9c0] focus:ring-2 focus:ring-[#8aa9c0]/30 outline-none transition"
             />
           </div>
 
           {/* Subject */}
           <div>
-            <label className="block mb-2 font-medium">Betreff *</label>
+            <label className="block mb-2 font-medium text-white/85">Betreff *</label>
             <input
               type="text"
               required
-              className="w-full px-4 py-2 rounded-md bg-transparent border border-orange-400/60 shadow-md shadow-orange-500/30 focus:border-orange-400 focus:shadow-orange-500 focus:shadow-lg outline-none transition"
+              className="w-full px-4 py-2 rounded-md bg-transparent border border-[#e6dfd0]/50 focus:border-[#8aa9c0] focus:ring-2 focus:ring-[#8aa9c0]/30 outline-none transition"
             />
           </div>
 
           {/* Message */}
           <div>
-            <label className="block mb-2 font-medium">Nachricht *</label>
+            <label className="block mb-2 font-medium text-white/85">Nachricht *</label>
             <textarea
               required
               rows={5}
-              className="w-full px-4 py-2 rounded-md bg-transparent border border-orange-400/60 shadow-md shadow-orange-500/30 focus:border-orange-400 focus:shadow-orange-500 focus:shadow-lg outline-none transition resize-none"
-            ></textarea>
+              className="w-full px-4 py-2 rounded-md bg-transparent border border-[#e6dfd0]/50 focus:border-[#8aa9c0] focus:ring-2 focus:ring-[#8aa9c0]/30 outline-none transition resize-none"
+            />
           </div>
 
-          {/* Submit button */}
+          {/* Submit */}
           <div className="text-center">
             <button
               type="submit"
-              className="px-8 py-3 bg-transparent border border-orange-400 text-orange-400 rounded-md font-semibold tracking-wide shadow-md shadow-orange-500/30 hover:bg-orange-400 hover:text-black hover:shadow-orange-500 hover:shadow-lg transition"
+              className="px-6 py-3 rounded-md border border-[#b59b6a]/60 text-white/95 hover:bg-[#b59b6a]/15 hover:border-[#b59b6a] transition"
             >
               Nachricht senden
             </button>
           </div>
         </form>
+
       </section>
     </main>
   );

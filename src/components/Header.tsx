@@ -1,132 +1,108 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { FaInstagram, FaTiktok, FaEnvelope } from "react-icons/fa";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, Variants } from "framer-motion";
+import { FaInstagram, FaTiktok, FaEnvelope } from "react-icons/fa";
 
 export default function Header() {
-  const [typedText, setTypedText] = useState("");
-  const [shouldAnimate, setShouldAnimate] = useState(true);
   const pathname = usePathname();
-  const fullText = "Linda Güzel";
 
-  useEffect(() => {
-    let i = 0;
-    const typing = setInterval(() => {
-      setTypedText(fullText.slice(0, i + 1));
-      i++;
-      if (i === fullText.length) clearInterval(typing);
-    }, 150);
-    return () => clearInterval(typing);
-  }, []);
+  // Palette
+  const borderGold = "rgba(181,155,106,0.45)";
+  const textMain = "#000000"; // black
+  const textDim = "rgba(0,0,0,0.75)";
 
-  useEffect(() => {
-    setTimeout(() => setShouldAnimate(false), 1500);
-  }, []);
+  // Animations
+  const container: Variants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.08 } },
+  };
 
-  const glowStyle = {
-    textShadow: "0 0 6px rgba(255, 255, 255, 0.8)",
+  const item: Variants = {
+    hidden: { opacity: 0, y: 6 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
   };
 
   return (
-    <header className="w-full h-[90px] md:h-[110px] bg-transparent relative">
-      {/* Optional overlay for readability */}
-      <div className="absolute inset-0 bg-black/40" />
+    <header className="w-full h-[90px] md:h-[110px] relative">
+      {/* Soft grayish-black transparent background with blur */}
+      <div className="absolute inset-0 bg-[rgba(40,40,40,0.3)] backdrop-blur-md pointer-events-none" />
+      {/* Bottom gold border */}
+      <div className="absolute bottom-0 left-0 w-full h-px" style={{ background: borderGold }} />
 
-      {/* Bright glowing orange underline */}
-      <div
-        className="absolute bottom-0 left-0 w-full h-[3px] bg-orange-400"
-        style={{
-          boxShadow:
-            "0 0 8px rgba(251,146,60,0.9), 0 0 16px rgba(251,146,60,0.7), 0 0 24px rgba(251,146,60,0.5)",
-        }}
-      ></div>
-
-      <div className="relative z-10 h-full grid grid-cols-3 items-center px-6 md:px-20">
+      <motion.div
+        className="relative z-10 h-full grid grid-cols-3 items-center px-6 md:px-20"
+        variants={container}
+        initial="hidden"
+        animate="show"
+      >
         {/* Left: Name */}
-        <Link
-          href="/"
-          className="text-white text-xl md:text-3xl font-bold tracking-wide whitespace-nowrap hover:text-orange-400 transition"
-          style={{ ...glowStyle, minWidth: "9.5ch" }}
-        >
-          {typedText}
-        </Link>
-
-        {/* Center: Nav */}
-        <motion.nav
-          initial={shouldAnimate ? { opacity: 0, y: -10 } : false}
-          animate={shouldAnimate ? { opacity: 1, y: 0 } : false}
-          transition={{ duration: 1 }}
-          className="flex justify-center gap-8 md:gap-14 text-sm md:text-lg text-white font-semibold"
-        >
+        <motion.div variants={item}>
           <Link
             href="/"
-            className={`relative transition hover:text-orange-400 ${
-              pathname === "/"
-                ? "text-orange-400 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-orange-400 after:shadow-md"
-                : ""
-            }`}
+            className="text-lg md:text-2xl font-semibold tracking-wide whitespace-nowrap"
+            style={{ color: textMain }}
           >
-            Über mich
+            Linda Güzel
           </Link>
-          <Link
-            href="/galerie"
-            className={`relative transition hover:text-orange-400 ${
-              pathname === "/galerie"
-                ? "text-orange-400 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-orange-400 after:shadow-md"
-                : ""
-            }`}
-          >
-            Galerie
-          </Link>
-          <Link
-            href="/kontakt"
-            className={`relative transition hover:text-orange-400 ${
-              pathname === "/kontakt"
-                ? "text-orange-400 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-orange-400 after:shadow-md"
-                : ""
-            }`}
-          >
-            Kontakt
-          </Link>
+        </motion.div>
+
+        {/* Center: Navigation */}
+        <motion.nav
+          className="flex justify-center gap-8 md:gap-12 text-sm md:text-base font-medium"
+          variants={item}
+          style={{ color: textDim }}
+        >
+          {[
+            { href: "/", label: "Über mich" },
+            { href: "/galerie", label: "Galerie" },
+            { href: "/kontakt", label: "Kontakt" },
+          ].map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="relative group pb-1 transition-colors"
+                style={{ color: active ? textMain : textDim }}
+              >
+                {item.label}
+                <span
+                  className={`absolute left-0 -bottom-[2px] h-[1px] w-full transition-opacity ${
+                    active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  }`}
+                  style={{ background: borderGold }}
+                />
+              </Link>
+            );
+          })}
         </motion.nav>
 
-        {/* Right: Icons */}
+        {/* Right: Socials */}
         <motion.div
-          initial={shouldAnimate ? { opacity: 0, y: -10 } : false}
-          animate={shouldAnimate ? { opacity: 1, y: 0 } : false}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="flex justify-end gap-8 text-white text-xl md:text-2xl"
+          className="flex justify-end gap-5 md:gap-6 text-xl"
+          variants={item}
+          style={{ color: textDim }}
         >
-          <Link
-            href="https://www.tiktok.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-orange-400 transition"
-            style={glowStyle}
-          >
-            <FaTiktok />
-          </Link>
-          <Link
-            href="https://www.instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-orange-400 transition"
-            style={glowStyle}
-          >
+          <Link href="https://www.instagram.com" target="_blank" rel="noreferrer" className="hover:opacity-100">
             <FaInstagram />
           </Link>
-          <Link
-            href="/kontakt"
-            className="hover:text-orange-400 transition"
-            style={glowStyle}
-          >
+          <Link href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="hover:opacity-100">
+            <FaTiktok />
+          </Link>
+          <Link href="/kontakt" className="hover:opacity-100">
             <FaEnvelope />
           </Link>
         </motion.div>
-      </div>
+      </motion.div>
     </header>
   );
 }
