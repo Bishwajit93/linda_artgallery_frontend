@@ -75,12 +75,13 @@ export default function Header() {
                 style={{ color: active ? textMain : textDim }}
               >
                 {item.label}
-                <span
-                  className={`absolute left-0 -bottom-[2px] h-[1px] w-full transition-opacity ${
-                    active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                  }`}
-                  style={{ background: borderGold }}
-                />
+              <span
+                className={`absolute left-0 -bottom-[2px] h-[2px] w-full transition-opacity ${
+                  active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
+                style={{ background: "currentColor" }} // antique gold, stronger opacity
+              />
+
               </Link>
             );
           })}
@@ -92,10 +93,10 @@ export default function Header() {
           variants={item}
           style={{ color: textDim }}
         >
-          <Link href="https://www.instagram.com" target="_blank" rel="noreferrer" className="hover:opacity-100">
+          <Link href="https://www.instagram.com/l.i.nd.a" target="_blank" rel="noreferrer" className="hover:opacity-100">
             <FaInstagram />
           </Link>
-          <Link href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="hover:opacity-100">
+          <Link href="https://www.tiktok.com/@l.i.nd.aa" target="_blank" rel="noreferrer" className="hover:opacity-100">
             <FaTiktok />
           </Link>
           <Link href="/kontakt" className="hover:opacity-100">
