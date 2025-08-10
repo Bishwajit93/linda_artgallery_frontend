@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
+import { Analytics } from "@vercel/analytics/next"
 export const metadata: Metadata = {
   title: "Linda Güzel – Galerie",
   description: "Persönliche Kunstgalerie und Portfolio von Linda Güzel.",
@@ -30,6 +30,7 @@ export default function RootLayout({
 
         {/* Footer */}
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
