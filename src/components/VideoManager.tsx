@@ -55,10 +55,12 @@ export default function VideoManager() {
       setPoster(null);
       // refresh list
       await load();
-    } catch (err: any) {
-      console.error(err);
-      alert("Upload failed:\n" + (err?.message || "Unknown error"));
-    } finally {
+    } catch (err: unknown) {
+        const message =
+            err instanceof Error ? err.message : "Unknown error";
+        console.error(err);
+        alert("Upload failed:\n" + message);
+        } finally {
       setBusy(false);
     }
   };
@@ -69,10 +71,12 @@ export default function VideoManager() {
       setBusy(true);
       await deleteVideo(id);
       await load();
-    } catch (e: any) {
-      console.error(e);
-      alert("Delete failed:\n" + (e?.message || "Unknown error"));
-    } finally {
+    } catch (e: unknown) {
+        const message =
+            e instanceof Error ? e.message : "Unknown error";
+        console.error(e);
+        alert("Delete failed:\n" + message);
+        } finally {
       setBusy(false);
     }
   };
