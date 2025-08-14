@@ -56,11 +56,10 @@ export default function VideoManager() {
       // refresh list
       await load();
     } catch (err: unknown) {
-        const message =
-            err instanceof Error ? err.message : "Unknown error";
-        console.error(err);
-        alert("Upload failed:\n" + message);
-        } finally {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.error(err);
+      alert("Upload failed:\n" + message);
+    } finally {
       setBusy(false);
     }
   };
@@ -72,11 +71,10 @@ export default function VideoManager() {
       await deleteVideo(id);
       await load();
     } catch (e: unknown) {
-        const message =
-            e instanceof Error ? e.message : "Unknown error";
-        console.error(e);
-        alert("Delete failed:\n" + message);
-        } finally {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(e);
+      alert("Delete failed:\n" + message);
+    } finally {
       setBusy(false);
     }
   };
@@ -124,22 +122,46 @@ export default function VideoManager() {
         </label>
 
         <div className="grid md:grid-cols-2 gap-3">
-          <label className="grid gap-1">
+          {/* Video file input */}
+          <label className="grid gap-1 border border-gray-300 rounded-lg p-3 bg-gray-50">
             <span className="text-sm font-medium">Video file (.mp4)</span>
             <input
               type="file"
               accept="video/*"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="block w-full text-sm text-gray-700 
+                         file:mr-4 file:py-2 file:px-4 
+                         file:rounded-lg file:border-0
+                         file:text-sm file:font-semibold
+                         file:bg-black file:text-white
+                         hover:file:bg-gray-800 cursor-pointer"
             />
+            {file && (
+              <span className="text-xs text-green-600 mt-1">
+                Selected: {file.name}
+              </span>
+            )}
           </label>
 
-          <label className="grid gap-1">
+          {/* Poster image input */}
+          <label className="grid gap-1 border border-gray-300 rounded-lg p-3 bg-gray-50">
             <span className="text-sm font-medium">Poster image (optional)</span>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setPoster(e.target.files?.[0] || null)}
+              className="block w-full text-sm text-gray-700 
+                         file:mr-4 file:py-2 file:px-4 
+                         file:rounded-lg file:border-0
+                         file:text-sm file:font-semibold
+                         file:bg-black file:text-white
+                         hover:file:bg-gray-800 cursor-pointer"
             />
+            {poster && (
+              <span className="text-xs text-green-600 mt-1">
+                Selected: {poster.name}
+              </span>
+            )}
           </label>
         </div>
 
@@ -169,9 +191,17 @@ export default function VideoManager() {
           <div key={v.id} className="border rounded-lg overflow-hidden bg-white">
             <div className="aspect-video bg-neutral-100">
               {v.poster_url ? (
-                <img src={v.poster_url} alt={v.title} className="w-full h-full object-cover" />
+                <img
+                  src={v.poster_url}
+                  alt={v.title}
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <video src={v.file_url || ""} className="w-full h-full object-cover" />
+                <video
+                  src={v.file_url || ""}
+                  className="w-full h-full object-cover"
+                  controls
+                />
               )}
             </div>
             <div className="p-3">
