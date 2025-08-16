@@ -188,12 +188,16 @@ export default function VideoManager() {
       <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {videos.map((v) => (
           <div key={v.id} className="border rounded-lg overflow-hidden bg-white">
-            <div className="aspect-video bg-neutral-100">
-              <video
-                src={v.file_url || ""}
-                className="w-full h-full object-cover"
-                controls
-              />
+            <div className="aspect-video bg-neutral-100 flex items-center justify-center">
+              {v.file_url ? (
+                <video
+                  src={v.file_url}
+                  className="w-full h-full object-cover"
+                  controls
+                />
+              ) : (
+                <span className="text-gray-500 text-sm">No video available</span>
+              )}
             </div>
             <div className="p-3">
               <div className="font-medium line-clamp-1">{v.title}</div>
@@ -201,13 +205,16 @@ export default function VideoManager() {
                 #{v.order} • {v.is_published ? "Published" : "Hidden"}
               </div>
               <div className="mt-3 flex gap-2">
-                <a
-                  href={v.file_url || "#"}
-                  target="_blank"
-                  className="px-3 py-1.5 text-sm rounded border"
-                >
-                  Open
-                </a>
+                {v.file_url && (
+                  <a
+                    href={v.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 text-sm rounded border"
+                  >
+                    Open
+                  </a>
+                )}
                 <button
                   onClick={() => onDelete(v.id)}
                   disabled={busy}
