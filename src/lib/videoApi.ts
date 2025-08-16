@@ -5,8 +5,9 @@
 // related to video management. 
 // It provides functions to:
 //   - Fetch the list of videos
-//   - Upload a new video (with progress tracking)
+//   - Upload a new video (via Cloudinary, with progress tracking)
 //   - Delete an existing video
+//   - Get a Cloudinary signature from Django backend
 //
 // HOW IT FITS IN THE PROJECT:
 // - The React components (like VideoManager.tsx) import these 
@@ -34,7 +35,7 @@ export type GalleryVideo = {
 };
 
 // ------------------
-// HELPER FUNCTIONS
+// HELPERS
 // ------------------
 
 // Timeout helper → ensures requests fail if they take too long
@@ -61,7 +62,7 @@ async function retryFetch(url: string, options: RequestInit, retries = 2) {
 }
 
 // ------------------
-// MAIN API FUNCTIONS
+// API FUNCTIONS
 // ------------------
 
 // 1. Get list of all videos
@@ -69,15 +70,49 @@ export async function fetchVideos(): Promise<GalleryVideo[]> {
   return getJson<GalleryVideo[]>("/videos/");
 }
 
-// 2. Upload a new video file using FormData
-//    - Accepts an optional onProgress callback to show % progress
-export async function uploadVideoFD(
-  fd: FormData,
+// 2. Get Cloudinary signature from Django backend
+export async function getCloudinarySignature(folder = "linda/videos") {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/cloudinary/signature/`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folder }),
+      credentials: "include", // if Django auth cookies are needed
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("❌ Failed to get Cloudinary signature");
+  }
+
+  return response.json();
+}
+
+// 3. Upload a new video (to Cloudinary, then save metadata in Django)
+//    - Accepts title, description, and the file
+//    - Optional onProgress callback to show % progress
+export async function uploadVideo(
+  file: File,
+  title: string,
+  description?: string,
   onProgress?: (percent: number) => void
 ): Promise<GalleryVideo> {
-  return new Promise((resolve, reject) => {
+  // Step 1: Get signature from Django
+  const { signature, timestamp, folder, api_key, cloud_name } =
+    await getCloudinarySignature();
+
+  // Step 2: Upload file to Cloudinary
+  const cloudinaryUpload = await new Promise<any>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${API_BASE_URL}/videos/upload/`);
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("api_key", api_key);
+    formData.append("timestamp", timestamp.toString());
+    formData.append("folder", folder);
+    formData.append("signature", signature);
 
     // progress tracking
     xhr.upload.onprogress = (event) => {
@@ -86,26 +121,41 @@ export async function uploadVideoFD(
       }
     };
 
-    // handle success
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(JSON.parse(xhr.responseText));
       } else {
-        reject(new Error(`❌ Upload failed: ${xhr.statusText}`));
+        reject(new Error(`❌ Cloudinary upload failed: ${xhr.statusText}`));
       }
     };
 
-    // handle errors
-    xhr.onerror = () => reject(new Error("❌ Network error during upload"));
-    xhr.ontimeout = () => reject(new Error("⏳ Upload timed out"));
-    xhr.timeout = 30000; // 30s timeout
+    xhr.onerror = () => reject(new Error("❌ Network error during Cloudinary upload"));
+    xhr.ontimeout = () => reject(new Error("⏳ Cloudinary upload timed out"));
+    xhr.timeout = 60000; // 60s timeout for big videos
 
-    // send request
-    xhr.send(fd);
+    xhr.send(formData);
   });
+
+  // Step 3: Save metadata in Django
+  const backendRes = await fetch(`${API_BASE_URL}/videos/upload/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title,
+      description,
+      file_url: cloudinaryUpload.secure_url, // Cloudinary video URL
+      poster_url: cloudinaryUpload.secure_url.replace(".mp4", ".jpg"), // optional thumbnail trick
+    }),
+  });
+
+  if (!backendRes.ok) {
+    throw new Error("❌ Failed to save video in backend");
+  }
+
+  return backendRes.json();
 }
 
-// 3. Delete a video by ID
+// 4. Delete a video by ID
 export async function deleteVideo(id: number): Promise<void> {
   await retryFetch(`${API_BASE_URL}/videos/${id}/delete/`, { method: "DELETE" });
 }

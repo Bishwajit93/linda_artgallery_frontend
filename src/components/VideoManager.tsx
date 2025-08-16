@@ -1,9 +1,9 @@
 // VideoManager.tsx
 // ------------------------------------------------------------
-// Simplified: ONLY videos (no poster images).
+// Videos manager:
 // - Fetch videos from Django backend
-// - Upload video directly to Cloudinary
-// - Send metadata + URL to backend
+// - Upload video via Cloudinary (with Django signature)
+// - Save metadata to backend
 // - Delete videos
 // - Display video list
 // ------------------------------------------------------------
@@ -11,7 +11,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { deleteVideo, fetchVideos, GalleryVideo } from "@/lib/videoApi";
+import { deleteVideo, fetchVideos, GalleryVideo, uploadVideo } from "@/lib/videoApi";
 
 export default function VideoManager() {
   const [videos, setVideos] = useState<GalleryVideo[]>([]);
@@ -23,6 +23,7 @@ export default function VideoManager() {
   const [order, setOrder] = useState<number>(0);
   const [isPublished, setIsPublished] = useState(true);
   const [file, setFile] = useState<File | null>(null);
+  const [progress, setProgress] = useState<number>(0);
 
   // ----------------------------
   // Load all videos
@@ -53,40 +54,10 @@ export default function VideoManager() {
 
     try {
       setBusy(true);
+      setProgress(0);
 
-      // 1. Ask backend for a signed upload signature
-      const sigRes = await fetch("/api/videos/upload-signature/");
-      if (!sigRes.ok) throw new Error("Failed to get Cloudinary signature");
-      const sigData = await sigRes.json();
-
-      // 2. Upload video to Cloudinary
-      const cloudForm = new FormData();
-      cloudForm.append("file", file);
-      cloudForm.append("api_key", sigData.api_key);
-      cloudForm.append("timestamp", sigData.timestamp);
-      cloudForm.append("folder", sigData.folder);
-      cloudForm.append("signature", sigData.signature);
-
-      const cloudUrl = `https://api.cloudinary.com/v1_1/${sigData.cloud_name}/video/upload`;
-      const uploadRes = await fetch(cloudUrl, { method: "POST", body: cloudForm });
-      if (!uploadRes.ok) throw new Error("Cloudinary upload failed");
-      const uploadJson = await uploadRes.json();
-
-      const fileUrl = uploadJson.secure_url;
-
-      // 3. Save metadata to backend
-      const metaRes = await fetch("/api/videos/upload/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: title || "Untitled",
-          description,
-          order,
-          is_published: isPublished,
-          file_url: fileUrl,
-        }),
-      });
-      if (!metaRes.ok) throw new Error("Failed to save video metadata");
+      // Upload to Cloudinary + save in Django
+      await uploadVideo(file, title || "Untitled", description, (p) => setProgress(p));
 
       // Reset form + reload
       setTitle("");
@@ -94,6 +65,7 @@ export default function VideoManager() {
       setOrder(0);
       setIsPublished(true);
       setFile(null);
+      setProgress(0);
       await load();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
@@ -196,6 +168,10 @@ export default function VideoManager() {
           />
           <span className="text-sm">Published</span>
         </label>
+
+        {progress > 0 && progress < 100 && (
+          <div className="text-sm text-blue-600">Uploading... {progress}%</div>
+        )}
 
         <div>
           <button
