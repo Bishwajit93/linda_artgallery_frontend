@@ -34,6 +34,13 @@ export type GalleryVideo = {
   created_at: string;
 };
 
+// Cloudinary response type
+type CloudinaryUploadResponse = {
+  secure_url: string;
+  public_id: string;
+  [key: string]: unknown; // keep flexible for other fields
+};
+
 // ------------------
 // HELPERS
 // ------------------
@@ -103,38 +110,45 @@ export async function uploadVideo(
     await getCloudinarySignature();
 
   // Step 2: Upload file to Cloudinary
-  const cloudinaryUpload = await new Promise<any>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`);
+  const cloudinaryUpload: CloudinaryUploadResponse = await new Promise(
+    (resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        "POST",
+        `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`
+      );
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("api_key", api_key);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("api_key", api_key);
+      formData.append("timestamp", timestamp.toString());
+      formData.append("folder", folder);
+      formData.append("signature", signature);
 
-    // progress tracking
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable && onProgress) {
-        onProgress(Math.round((event.loaded / event.total) * 100));
-      }
-    };
+      // progress tracking
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable && onProgress) {
+          onProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      };
 
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        reject(new Error(`❌ Cloudinary upload failed: ${xhr.statusText}`));
-      }
-    };
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject(new Error(`❌ Cloudinary upload failed: ${xhr.statusText}`));
+        }
+      };
 
-    xhr.onerror = () => reject(new Error("❌ Network error during Cloudinary upload"));
-    xhr.ontimeout = () => reject(new Error("⏳ Cloudinary upload timed out"));
-    xhr.timeout = 60000; // 60s timeout for big videos
+      xhr.onerror = () =>
+        reject(new Error("❌ Network error during Cloudinary upload"));
+      xhr.ontimeout = () =>
+        reject(new Error("⏳ Cloudinary upload timed out"));
+      xhr.timeout = 60000; // 60s timeout for big videos
 
-    xhr.send(formData);
-  });
+      xhr.send(formData);
+    }
+  );
 
   // Step 3: Save metadata in Django
   const backendRes = await fetch(`${API_BASE_URL}/videos/upload/`, {
