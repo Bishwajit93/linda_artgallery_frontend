@@ -38,6 +38,7 @@ export type GalleryVideo = {
 type CloudinaryUploadResponse = {
   secure_url: string;
   public_id: string;
+  thumbnail_url?: string; // ✅ added so no need for "any"
   [key: string]: unknown; // keep flexible for other fields
 };
 
@@ -130,7 +131,7 @@ export async function uploadVideo(
 
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(JSON.parse(xhr.responseText));
+          resolve(JSON.parse(xhr.responseText) as CloudinaryUploadResponse);
         } else {
           reject(new Error(`❌ Cloudinary upload failed: ${xhr.statusText}`));
         }
@@ -154,9 +155,8 @@ export async function uploadVideo(
       title,
       description,
       file_url: cloudinaryUpload.secure_url, // Cloudinary video URL
-      // fallback: use thumbnail if available, otherwise null
       poster_url:
-        (cloudinaryUpload as any).thumbnail_url ||
+        cloudinaryUpload.thumbnail_url ||
         (cloudinaryUpload.secure_url.endsWith(".mp4")
           ? cloudinaryUpload.secure_url.replace(".mp4", ".jpg")
           : null),
