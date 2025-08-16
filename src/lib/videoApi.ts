@@ -1,6 +1,24 @@
 // lib/videoApi.ts
+// -----------------------------------------------------------
+// PURPOSE OF THIS FILE:
+// This file contains all **frontend API helper functions** 
+// related to video management. 
+// It provides functions to:
+//   - Fetch the list of videos
+//   - Upload a new video (with progress tracking)
+//   - Delete an existing video
+//
+// HOW IT FITS IN THE PROJECT:
+// - The React components (like VideoManager.tsx) import these 
+//   helpers to interact with the Django backend.
+// - Keeps API logic separated and reusable across the app.
+// -----------------------------------------------------------
+
 import { API_BASE_URL, getJson } from "./apiBase";
 
+// ------------------
+// TYPE DEFINITIONS
+// ------------------
 export type GalleryVideo = {
   id: number;
   title: string;
@@ -15,7 +33,11 @@ export type GalleryVideo = {
   created_at: string;
 };
 
-// Timeout helper
+// ------------------
+// HELPER FUNCTIONS
+// ------------------
+
+// Timeout helper → ensures requests fail if they take too long
 const withTimeout = (promise: Promise<Response>, ms = 20000) =>
   Promise.race([
     promise,
@@ -24,7 +46,7 @@ const withTimeout = (promise: Promise<Response>, ms = 20000) =>
     ),
   ]);
 
-// Retry helper
+// Retry helper → retries failed requests (e.g. network hiccups)
 async function retryFetch(url: string, options: RequestInit, retries = 2) {
   for (let i = 0; i <= retries; i++) {
     try {
@@ -32,17 +54,23 @@ async function retryFetch(url: string, options: RequestInit, retries = 2) {
       if (!res.ok) throw new Error(await res.text());
       return res;
     } catch (err) {
-      if (i === retries) throw err;
+      if (i === retries) throw err; // last attempt → throw error
     }
   }
   throw new Error("❌ Failed after retries");
 }
 
+// ------------------
+// MAIN API FUNCTIONS
+// ------------------
+
+// 1. Get list of all videos
 export async function fetchVideos(): Promise<GalleryVideo[]> {
   return getJson<GalleryVideo[]>("/videos/");
 }
 
-// Upload with progress
+// 2. Upload a new video file using FormData
+//    - Accepts an optional onProgress callback to show % progress
 export async function uploadVideoFD(
   fd: FormData,
   onProgress?: (percent: number) => void
@@ -51,12 +79,14 @@ export async function uploadVideoFD(
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${API_BASE_URL}/videos/upload/`);
 
+    // progress tracking
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable && onProgress) {
         onProgress(Math.round((event.loaded / event.total) * 100));
       }
     };
 
+    // handle success
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(JSON.parse(xhr.responseText));
@@ -65,13 +95,17 @@ export async function uploadVideoFD(
       }
     };
 
+    // handle errors
     xhr.onerror = () => reject(new Error("❌ Network error during upload"));
     xhr.ontimeout = () => reject(new Error("⏳ Upload timed out"));
     xhr.timeout = 30000; // 30s timeout
+
+    // send request
     xhr.send(fd);
   });
 }
 
+// 3. Delete a video by ID
 export async function deleteVideo(id: number): Promise<void> {
   await retryFetch(`${API_BASE_URL}/videos/${id}/delete/`, { method: "DELETE" });
 }
