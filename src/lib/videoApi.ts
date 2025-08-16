@@ -85,7 +85,7 @@ export async function getCloudinarySignature(folder = "linda/videos") {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ folder }),
-      credentials: "include", // if Django auth cookies are needed
+      credentials: "include",
     }
   );
 
@@ -97,8 +97,6 @@ export async function getCloudinarySignature(folder = "linda/videos") {
 }
 
 // 3. Upload a new video (to Cloudinary, then save metadata in Django)
-//    - Accepts title, description, and the file
-//    - Optional onProgress callback to show % progress
 export async function uploadVideo(
   file: File,
   title: string,
@@ -113,10 +111,8 @@ export async function uploadVideo(
   const cloudinaryUpload: CloudinaryUploadResponse = await new Promise(
     (resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(
-        "POST",
-        `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`
-      );
+      // ✅ FIX: use auto/upload instead of video/upload
+      xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloud_name}/auto/upload`);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -158,7 +154,12 @@ export async function uploadVideo(
       title,
       description,
       file_url: cloudinaryUpload.secure_url, // Cloudinary video URL
-      poster_url: cloudinaryUpload.secure_url.replace(".mp4", ".jpg"), // optional thumbnail trick
+      // fallback: use thumbnail if available, otherwise null
+      poster_url:
+        (cloudinaryUpload as any).thumbnail_url ||
+        (cloudinaryUpload.secure_url.endsWith(".mp4")
+          ? cloudinaryUpload.secure_url.replace(".mp4", ".jpg")
+          : null),
     }),
   });
 
