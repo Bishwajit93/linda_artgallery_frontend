@@ -1,57 +1,66 @@
-// src/components/SequentialVideoPlayer.tsx
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { fetchVideos } from "@/lib/videoApi";
 
-interface Video {
+// Match Django model: file_url can be null
+type GalleryVideo = {
   id: number;
-  file_url: string;
-}
+  file_url: string | null;
+};
 
 export default function SequentialVideoPlayer() {
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<GalleryVideo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Fetch videos from backend
   useEffect(() => {
-    async function loadVideos() {
+    async function load() {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/videos/`
-        );
-        if (!res.ok) throw new Error("Failed to fetch videos");
-        const data = await res.json();
-        setVideos(data);
+        const data: GalleryVideo[] = await fetchVideos();
+
+        // filter out videos with no file_url
+        const valid = data.filter((v) => v.file_url);
+        setVideos(valid);
       } catch (err) {
-        console.error("Error fetching videos:", err);
+        console.error("Failed to load videos", err);
       }
     }
-    loadVideos();
+    load();
   }, []);
 
-  // Handle when one video ends
   const handleEnded = () => {
     setCurrentIndex((prev) => (prev + 1) % videos.length);
   };
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(() => {
+        console.warn("Autoplay blocked by browser.");
+      });
+    }
+  }, [currentIndex]);
+
   if (videos.length === 0) {
-    return <p className="text-gray-500">Keine Videos verfügbar.</p>;
+    return <p>No videos available.</p>;
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <video
-        key={videos[currentIndex].id} // force reload on index change
+    <div className="w-full">
+        <video
+        key={videos[currentIndex].id}
         ref={videoRef}
-        src={videos[currentIndex].file_url}
-        className="w-full rounded-lg shadow-lg"
+        src={videos[currentIndex].file_url || ""}
+        className="w-full rounded-lg"
         controls
         autoPlay
+        muted        // 👈 add this
+        playsInline  // 👈 and this
         onEnded={handleEnded}
-      />
-      <p className="text-center text-sm mt-2 text-gray-600">
-        Video {currentIndex + 1} von {videos.length}
+        />
+      <p className="mt-2 text-center text-sm text-gray-500">
+        Video {currentIndex + 1} of {videos.length}
       </p>
     </div>
   );
