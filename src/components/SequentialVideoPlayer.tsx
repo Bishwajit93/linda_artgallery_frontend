@@ -9,12 +9,11 @@ export default function SequentialVideoPlayer() {
   const [needsTap, setNeedsTap] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Load videos once
+  // Load videos from API
   useEffect(() => {
     (async () => {
       try {
         const data = await fetchVideos();
-        // only playable ones
         const valid = data.filter(v => v.is_published && !!v.file_url);
         setVideos(valid);
       } catch (err) {
@@ -23,32 +22,16 @@ export default function SequentialVideoPlayer() {
     })();
   }, []);
 
-  // Try to autoplay when videos first load
-  useEffect(() => {
-    if (!videos.length || !videoRef.current) return;
-    const tryPlay = async () => {
-      try {
-        await videoRef.current!.play();
-        setNeedsTap(false);
-      } catch {
-        // Mobile browser may block autoplay — show tap overlay
-        setNeedsTap(true);
-      }
-    };
-    // load current source then attempt play
-    videoRef.current.load();
-    tryPlay();
-  }, [videos]);
-
-  // When current video ends → go to next (loop)
+  // Advance to next video when one ends
   const handleEnded = () => {
     if (!videos.length) return;
-    setCurrentIndex((prev) => (prev + 1) % videos.length);
+    setCurrentIndex(prev => (prev + 1) % videos.length);
   };
 
-  // When index changes, load & attempt play again
+  // Try autoplay whenever video source changes
   useEffect(() => {
     if (!videoRef.current || !videos.length) return;
+
     const tryPlay = async () => {
       try {
         await videoRef.current!.play();
@@ -57,9 +40,9 @@ export default function SequentialVideoPlayer() {
         setNeedsTap(true);
       }
     };
-    videoRef.current.load();
+
     tryPlay();
-  }, [currentIndex, videos.length]);
+  }, [currentIndex, videos]);
 
   if (!videos.length) {
     return <p className="text-center text-gray-500">No published videos yet.</p>;
@@ -70,25 +53,24 @@ export default function SequentialVideoPlayer() {
   return (
     <div className="relative w-full max-w-4xl mx-auto">
       <video
-        key={videos[currentIndex].id}        // force reload on index change
+        key={videos[currentIndex].id} // force reload on index change
         ref={videoRef}
         src={src}
         className="w-full rounded-lg shadow"
         autoPlay
-        muted           // required for mobile autoplay
-        playsInline     // required for iOS inline playback
-        controls
+        muted
+        playsInline
         preload="auto"
+        crossOrigin="anonymous"
         onEnded={handleEnded}
-        onCanPlay={() => {
-          // if can play and we previously needed tap, try again
-          if (needsTap && videoRef.current) {
-            videoRef.current.play().catch(() => {});
+        onLoadedMetadata={() => {
+          if (videoRef.current) {
+            videoRef.current.play().catch(() => setNeedsTap(true));
           }
         }}
       />
 
-      {/* Big “Tap to play” overlay for mobile if autoplay blocked */}
+      {/* Fallback "Tap to play" overlay for mobile */}
       {needsTap && (
         <button
           onClick={() => {
