@@ -1,8 +1,9 @@
-// src/app/page.tsx
+import HeroVideo from "@/components/HeroVideo";
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl">Linda Güzel – Startseite</h1>
+    <main className="min-h-screen bg-white text-neutral-900">
+      <HeroVideo />
     </main>
   );
 }

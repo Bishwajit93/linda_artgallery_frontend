@@ -46,20 +46,20 @@ export default function Header() {
         {/* Right: Socials */}
         <div className="hidden md:flex gap-8 justify-self-end">
           <a 
-            href="https://instagram.com" 
+            href="https://www.instagram.com/l.i.nd.a?igsh=MXVnY2UzMG41N2dsZg%3D%3D&utm_source=qr " 
             target="_blank" rel="noreferrer" 
             className="hover:text-[#C9A227]">
             <FaInstagram className="w-5 h-5" />
           </a>
           <a 
-            href="https://tiktok.com" 
+            href="https://www.tiktok.com/@l.i.nd.aa?_t=ZN-8tmNAkPbRX4&_r=1&fbclid=PAdGRleAMeW6RleHRuA2FlbQIxMQABpyEmvnhgrdTur80yuSgDk6xeTGWT6-SXx7KDpNMFRMlMuZJabLdqIVpHRq8d_aem_AOZHXviULCQY2lv6Dwz7ng " 
             target="_blank" 
             rel="noreferrer" 
             className="hover:text-[#C9A227]">
             <FaTiktok className="w-5 h-5" />
           </a>
           <a
-            href="https://linkedin.com/in/lindaguzel"
+            href=" https://de.linkedin.com/in/linda-g%C3%BCzel-862a71256 "
             target="_blank"
             rel="noreferrer"
             className="hover:text-[#C9A227]"

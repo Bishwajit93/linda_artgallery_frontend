@@ -10,9 +10,9 @@ export default function MobileNav() {
   const [connectOpen, setConnectOpen] = useState(false);
 
   const items = [
-    { href: "/",        label: "Über mich", icon: <FaUser className="w-5 h-5" /> },
-    { href: "/galerie", label: "Galerie",   icon: <FaImages className="w-5 h-5" /> },
-    { href: "/kontakt", label: "Kontakt",   icon: <FaEnvelope className="w-5 h-5" /> },
+    { href: "/", icon: <FaUser className="w-5 h-5" /> },
+    { href: "/galerie", icon: <FaImages className="w-5 h-5" /> },
+    { href: "/kontakt", icon: <FaEnvelope className="w-5 h-5" /> },
   ];
 
   return (
@@ -24,7 +24,7 @@ export default function MobileNav() {
         aria-label="Hauptnavigation mobil"
       >
         <ul className="grid grid-cols-4 text-xs text-[#1b1d1e]">
-          {items.map(({ href, label, icon }) => {
+          {items.map(({ href, icon }) => {
             const active = pathname === href;
             return (
               <li key={href}>
@@ -34,7 +34,6 @@ export default function MobileNav() {
                   className="flex flex-col items-center justify-center gap-1 py-3"
                 >
                   <span className={active ? "text-[#C9A227]" : ""}>{icon}</span>
-                  <span className={active ? "text-[#C9A227] font-medium" : ""}>{label}</span>
                   <span className={`mt-1 h-[2px] w-8 rounded-full ${active ? "bg-[#C9A227]" : "bg-transparent"}`} />
                 </Link>
               </li>

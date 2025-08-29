@@ -12,11 +12,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de">
+    // ✅ Lock html attrs; tolerate extensions with suppressHydrationWarning
+    <html lang="de" translate="no" suppressHydrationWarning>
+      <head>
+        {/* ✅ Hint to Google not to auto-translate the page */}
+        <meta name="google" content="notranslate" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+
       <body
         className="
           flex flex-col min-h-screen bg-[#f7f7f7] text-[#1b1d1e]
-          pb-[64px] md:pb-0   /* space for mobile bottom nav only on small screens */
+          pb-[64px] md:pb-0
         "
       >
         {/* Mobile top bar (fixed) */}
@@ -34,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
 
-        {/* Desktop footer: visible on md+ so it can't be obscured by mobile nav */}
+        {/* Desktop footer */}
         <div className="hidden md:block">
           <Footer />
         </div>
