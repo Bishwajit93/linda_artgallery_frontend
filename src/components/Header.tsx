@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaInstagram, FaTiktok, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaTiktok, FaLinkedin } from "react-icons/fa";
 
 export default function Header() {
   const pathname = usePathname();
@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#F5F3E7] text-[#1b1d1e] border-b border-[#C9A227]/30">
-      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-8 py-5">
+      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-8 py-8">
         
         {/* Left: Brand */}
         <div className="justify-self-start ">
@@ -45,15 +45,28 @@ export default function Header() {
 
         {/* Right: Socials */}
         <div className="hidden md:flex gap-8 justify-self-end">
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-[#C9A227]">
+          <a 
+            href="https://instagram.com" 
+            target="_blank" rel="noreferrer" 
+            className="hover:text-[#C9A227]">
             <FaInstagram className="w-5 h-5" />
           </a>
-          <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="hover:text-[#C9A227]">
+          <a 
+            href="https://tiktok.com" 
+            target="_blank" 
+            rel="noreferrer" 
+            className="hover:text-[#C9A227]">
             <FaTiktok className="w-5 h-5" />
           </a>
-          <Link href="/kontakt" className="hover:text-[#C9A227]">
-            <FaEnvelope className="w-5 h-5" />
-          </Link>
+          <a
+            href="https://linkedin.com/in/lindaguzel"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[#C9A227]"
+          >
+            <FaLinkedin className="w-5 h-5" />
+          </a>
+
         </div>
       </div>
     </header>
