@@ -50,8 +50,6 @@ export default function MobileNav() {
               aria-controls="connect-modal"
             >
               <FaShareAlt className="w-5 h-5" />
-              <span>Connect</span>
-              <span className="mt-1 h-[2px] w-8 rounded-full bg-transparent" />
             </button>
           </li>
         </ul>
@@ -61,9 +59,9 @@ export default function MobileNav() {
       <MobileConnectModal
         open={connectOpen}
         onClose={() => setConnectOpen(false)}
-        instagramUrl="https://instagram.com"
-        tiktokUrl="https://tiktok.com"
-        linkedinUrl="https://linkedin.com/in/lindaguzel"
+        instagramUrl="https://www.instagram.com/l.i.nd.a?igsh=MXVnY2UzMG41N2dsZg%3D%3D&utm_source=qr "
+        tiktokUrl="https://www.tiktok.com/@l.i.nd.aa?_t=ZN-8tmNAkPbRX4&_r=1&fbclid=PAdGRleAMeW6RleHRuA2FlbQIxMQABpyEmvnhgrdTur80yuSgDk6xeTGWT6-SXx7KDpNMFRMlMuZJabLdqIVpHRq8d_aem_AOZHXviULCQY2lv6Dwz7ng"
+        linkedinUrl="https://de.linkedin.com/in/linda-g%C3%BCzel-862a71256 "
       />
     </>
   );
