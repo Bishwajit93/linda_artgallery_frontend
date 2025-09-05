@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import MobileHeader from "@/components/MobileHeader";
-import MobileNav from "@/components/MobileNav";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import MobileHeader from "@/components/layout/MobileHeader";
+import MobileNav from "@/components/layout/MobileNav";
 
 export const metadata: Metadata = {
   title: "Linda Güzel | Galerie",

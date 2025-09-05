@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { FaUser, FaImages, FaEnvelope, FaShareAlt } from "react-icons/fa";
 import MobileConnectModal from "./MobileConnectModal";
 
 export default function MobileNav() {
@@ -10,9 +9,9 @@ export default function MobileNav() {
   const [connectOpen, setConnectOpen] = useState(false);
 
   const items = [
-    { href: "/", icon: <FaUser className="w-5 h-5" /> },
-    { href: "/galerie", icon: <FaImages className="w-5 h-5" /> },
-    { href: "/kontakt", icon: <FaEnvelope className="w-5 h-5" /> },
+    { href: "/", label: "Über mich" },
+    { href: "/galerie", label: "Galerie" },
+    { href: "/kontakt", label: "Kontakt" },
   ];
 
   return (
@@ -23,8 +22,8 @@ export default function MobileNav() {
                    pb-[max(env(safe-area-inset-bottom),0px)]"
         aria-label="Hauptnavigation mobil"
       >
-        <ul className="grid grid-cols-4 text-xs text-[#1b1d1e]">
-          {items.map(({ href, icon }) => {
+        <ul className="grid grid-cols-4 text-sm text-[#1b1d1e]">
+          {items.map(({ href, label }) => {
             const active = pathname === href;
             return (
               <li key={href}>
@@ -33,23 +32,30 @@ export default function MobileNav() {
                   aria-current={active ? "page" : undefined}
                   className="flex flex-col items-center justify-center gap-1 py-3"
                 >
-                  <span className={active ? "text-[#C9A227]" : ""}>{icon}</span>
-                  <span className={`mt-1 h-[2px] w-8 rounded-full ${active ? "bg-[#C9A227]" : "bg-transparent"}`} />
+                  <span className={active ? "text-[#C9A227] font-semibold" : ""}>
+                    {label}
+                  </span>
+                  <span
+                    className={`mt-1 h-[2px] w-8 rounded-full ${
+                      active ? "bg-[#C9A227]" : "bg-transparent"
+                    }`}
+                  />
                 </Link>
               </li>
             );
           })}
 
-          {/* Connect (modal trigger) */}
+          {/* Verbinden (modal trigger) */}
           <li>
             <button
               type="button"
               onClick={() => setConnectOpen(true)}
-              className="w-full flex flex-col items-center justify-center gap-1 py-3"
+              className="w-full flex flex-col items-center justify-center gap-1 py-3 cursor-pointer"
               aria-haspopup="dialog"
               aria-controls="connect-modal"
             >
-              <FaShareAlt className="w-5 h-5" />
+              <span>Verbinden</span>
+              <span className="mt-1 h-[2px] w-8 rounded-full bg-transparent" />
             </button>
           </li>
         </ul>
@@ -59,9 +65,9 @@ export default function MobileNav() {
       <MobileConnectModal
         open={connectOpen}
         onClose={() => setConnectOpen(false)}
-        instagramUrl="https://www.instagram.com/l.i.nd.a?igsh=MXVnY2UzMG41N2dsZg%3D%3D&utm_source=qr "
-        tiktokUrl="https://www.tiktok.com/@l.i.nd.aa?_t=ZN-8tmNAkPbRX4&_r=1&fbclid=PAdGRleAMeW6RleHRuA2FlbQIxMQABpyEmvnhgrdTur80yuSgDk6xeTGWT6-SXx7KDpNMFRMlMuZJabLdqIVpHRq8d_aem_AOZHXviULCQY2lv6Dwz7ng"
-        linkedinUrl="https://de.linkedin.com/in/linda-g%C3%BCzel-862a71256 "
+        instagramUrl="https://www.instagram.com/l.i.nd.a?igsh=MXVnY2UzMG41N2dsZg%3D%3D&utm_source=qr"
+        tiktokUrl="https://www.tiktok.com/@l.i.nd.aa?_t=ZN-8tmNAkPbRX4&_r=1"
+        linkedinUrl="https://de.linkedin.com/in/linda-g%C3%BCzel-862a71256"
       />
     </>
   );

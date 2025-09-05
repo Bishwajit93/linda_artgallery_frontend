@@ -1,4 +1,4 @@
-import ImageGrid from "@/components/ImageGrid";
+import ImageGrid from "@/components/artwork/ArtworkGrid";
 
 export const metadata = {
   title: "Galerie – Linda Güzel",
