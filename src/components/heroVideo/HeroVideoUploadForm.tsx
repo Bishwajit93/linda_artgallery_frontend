@@ -7,7 +7,7 @@ export default function HeroVideoUploadForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [isActive, setIsActive] = useState(true); // ✅ default: publish active
+  const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -21,6 +21,7 @@ export default function HeroVideoUploadForm() {
     setLoading(true);
     setError(null);
     setSuccess(null);
+
     try {
       await createHeroVideo({ title, description, video: file, is_active: isActive });
       setSuccess("✅ Video erfolgreich hochgeladen!");
@@ -28,7 +29,10 @@ export default function HeroVideoUploadForm() {
       setDescription("");
       setFile(null);
       setIsActive(true);
-    } catch (err: any) {
+    } catch (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      err: any
+    ) {
       setError(err.message || "Upload fehlgeschlagen.");
     } finally {
       setLoading(false);
@@ -42,7 +46,6 @@ export default function HeroVideoUploadForm() {
     >
       <h2 className="text-lg font-bold mb-2">Hero Video hochladen</h2>
 
-      {/* Title */}
       <input
         type="text"
         placeholder="Titel (optional)"
@@ -51,7 +54,6 @@ export default function HeroVideoUploadForm() {
         className="w-full border rounded p-2 focus:ring-2 focus:ring-black"
       />
 
-      {/* Description */}
       <textarea
         placeholder="Beschreibung (optional)"
         value={description}
@@ -59,7 +61,6 @@ export default function HeroVideoUploadForm() {
         className="w-full border rounded p-2 focus:ring-2 focus:ring-black"
       />
 
-      {/* File Input */}
       <div>
         <label className="block font-medium mb-1">Videodatei auswählen</label>
         <input
@@ -72,7 +73,6 @@ export default function HeroVideoUploadForm() {
         />
       </div>
 
-      {/* Publish Checkbox */}
       <label className="flex items-center gap-2">
         <input
           type="checkbox"
@@ -83,7 +83,6 @@ export default function HeroVideoUploadForm() {
         <span>Veröffentlichen (öffentlich sichtbar)</span>
       </label>
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={loading}
@@ -92,7 +91,6 @@ export default function HeroVideoUploadForm() {
         {loading ? "Hochladen…" : "Video hochladen"}
       </button>
 
-      {/* Messages */}
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-600 font-medium">{success}</p>}
     </form>

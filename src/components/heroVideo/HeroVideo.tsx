@@ -14,7 +14,10 @@ export default function HeroVideo() {
       try {
         const data = await fetchHeroVideos();
         setVideos(data);
-      } catch (err: any) {
+      } catch (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        err: any
+      ) {
         setError(err.message);
       } finally {
         setLoading(false);

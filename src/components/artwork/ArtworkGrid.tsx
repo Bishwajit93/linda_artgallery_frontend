@@ -1,4 +1,3 @@
-// src/components/ArtworkGrid.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +14,10 @@ export default function ArtworkGrid() {
       try {
         const data = await fetchArtworks();
         setArtworks(data);
-      } catch (err: any) {
+      } catch (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        err: any
+      ) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -34,7 +36,6 @@ export default function ArtworkGrid() {
           key={art.id}
           className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition"
         >
-          {/* Show first image if available */}
           {art.images.length > 0 && (
             <img
               src={art.images[0].image_url || "/file.svg"}
