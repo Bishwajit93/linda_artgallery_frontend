@@ -13,10 +13,13 @@ export default function HeroVideo() {
     async function load() {
       try {
         const data = await fetchHeroVideos();
-        console.log("🎥 API returned hero videos:", data);
         setVideos(data.filter((v) => v.video_url));
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -33,8 +36,8 @@ export default function HeroVideo() {
   return (
     <div className="w-full">
       <video
-        key={video.video_url || "fallback"}
-        src={video.video_url ?? undefined}   // ✅ null → undefined
+        key={video.video_url || "hero-video"}
+        src={video.video_url ?? undefined}  // ✅ null → undefined
         controls
         muted
         playsInline

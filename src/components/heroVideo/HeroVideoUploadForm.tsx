@@ -29,11 +29,12 @@ export default function HeroVideoUploadForm() {
       setDescription("");
       setFile(null);
       setIsActive(true);
-    } catch (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      err: any
-    ) {
-      setError(err.message || "Upload fehlgeschlagen.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Upload fehlgeschlagen.");
+      }
     } finally {
       setLoading(false);
     }
