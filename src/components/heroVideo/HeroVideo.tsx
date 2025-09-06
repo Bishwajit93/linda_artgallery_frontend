@@ -13,11 +13,9 @@ export default function HeroVideo() {
     async function load() {
       try {
         const data = await fetchHeroVideos();
-        setVideos(data);
-      } catch (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        err: any
-      ) {
+        console.log("🎥 API returned hero videos:", data);
+        setVideos(data.filter((v) => v.video_url));
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -34,19 +32,18 @@ export default function HeroVideo() {
 
   return (
     <div className="w-full">
-      {video.video_url ? (
-        <video
-          src={video.video_url}
-          autoPlay
-          loop
-          muted
-          playsInline
-          controls
-          className="w-full h-[500px] object-cover"
-        />
-      ) : (
-        <p className="text-center text-gray-500">No video file available.</p>
-      )}
+      <video
+        key={video.video_url || "fallback"}
+        src={video.video_url ?? undefined}   // ✅ null → undefined
+        controls
+        muted
+        playsInline
+        autoPlay
+        loop
+        style={{ width: "100%", height: "500px", backgroundColor: "black" }}
+      >
+        Sorry, your browser does not support embedded videos.
+      </video>
     </div>
   );
 }

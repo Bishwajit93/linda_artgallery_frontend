@@ -1,4 +1,3 @@
-// src/lib/heroVideoApi.ts
 import { API_BASE_URL } from "./apiBase";
 import { HeroVideo } from "@/types/heroVideo";
 
