@@ -14,10 +14,11 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#F5F3E7] text-[#1b1d1e] border-b border-[#C9A227]/30">
-      <div className="w-full flex items-center justify-between px-6 py-6">
+      {/* ✅ Match footer container style */}
+      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-8 py-6 gap-6">
         
         {/* Left: Brand */}
-        <div className="justify-self-start ">
+        <div className="justify-self-start">
           <Link href="/" className="text-2xl font-semibold tracking-wide">
             Linda Güzel
           </Link>
@@ -46,27 +47,26 @@ export default function Header() {
         {/* Right: Socials */}
         <div className="hidden md:flex gap-8 justify-self-end">
           <a 
-            href="https://www.instagram.com/l.i.nd.a?igsh=MXVnY2UzMG41N2dsZg%3D%3D&utm_source=qr " 
-            target="_blank" rel="noreferrer" 
-            className="hover:text-[#C9A227]">
+            href="https://www.instagram.com/l.i.nd.a?igsh=MXVnY2UzMG41N2dsZg%3D%3D&utm_source=qr"
+            target="_blank" rel="noreferrer"
+            className="hover:text-[#C9A227]"
+          >
             <FaInstagram className="w-5 h-5" />
           </a>
           <a 
-            href="https://www.tiktok.com/@l.i.nd.aa?_t=ZN-8tmNAkPbRX4&_r=1&fbclid=PAdGRleAMeW6RleHRuA2FlbQIxMQABpyEmvnhgrdTur80yuSgDk6xeTGWT6-SXx7KDpNMFRMlMuZJabLdqIVpHRq8d_aem_AOZHXviULCQY2lv6Dwz7ng " 
-            target="_blank" 
-            rel="noreferrer" 
-            className="hover:text-[#C9A227]">
+            href="https://www.tiktok.com/@l.i.nd.aa?_t=ZN-8tmNAkPbRX4&_r=1"
+            target="_blank" rel="noreferrer"
+            className="hover:text-[#C9A227]"
+          >
             <FaTiktok className="w-5 h-5" />
           </a>
           <a
-            href=" https://de.linkedin.com/in/linda-g%C3%BCzel-862a71256 "
-            target="_blank"
-            rel="noreferrer"
+            href="https://de.linkedin.com/in/linda-g%C3%BCzel-862a71256"
+            target="_blank" rel="noreferrer"
             className="hover:text-[#C9A227]"
           >
             <FaLinkedin className="w-5 h-5" />
           </a>
-
         </div>
       </div>
     </header>
