@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { createHeroVideo } from "@/lib/heroVideoApi";
 
-export default function HeroVideoUploadForm() {
+interface Props {
+  onUploadSuccess?: () => void;
+}
+
+export default function HeroVideoUploadForm({ onUploadSuccess }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -29,12 +33,10 @@ export default function HeroVideoUploadForm() {
       setDescription("");
       setFile(null);
       setIsActive(true);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Upload fehlgeschlagen.");
-      }
+
+      if (onUploadSuccess) onUploadSuccess(); // ✅ refresh parent list
+    } catch (err: any) {
+      setError(err.message || "Upload fehlgeschlagen.");
     } finally {
       setLoading(false);
     }
@@ -43,9 +45,9 @@ export default function HeroVideoUploadForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 p-6 border rounded-lg bg-white shadow max-w-md mx-auto"
+      className="space-y-4 p-4 border rounded-lg bg-gray-50 shadow max-w-md"
     >
-      <h2 className="text-lg font-bold mb-2">Hero Video hochladen</h2>
+      <h3 className="text-lg font-bold">Neues Hero Video hochladen</h3>
 
       <input
         type="text"

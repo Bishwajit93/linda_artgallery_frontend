@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#F5F3E7] text-[#1b1d1e] border-b border-[#C9A227]/30">
-      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-8 py-8">
+      <div className="w-full flex items-center justify-between px-6 py-6">
         
         {/* Left: Brand */}
         <div className="justify-self-start ">
