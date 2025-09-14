@@ -45,7 +45,7 @@ export default function HeroVideoSection() {
   const video = videos[currentIndex];
 
   return (
-    <section className="relative w-full h-screen bg-black overflow-hidden">
+    <section className="relative w-full h-[calc(100vh-64px)] md:h-screen bg-black overflow-hidden">
       {/* Video */}
       <video
         ref={videoRef}
