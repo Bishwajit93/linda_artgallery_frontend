@@ -31,8 +31,10 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
     try {
       const data = await fetchHeroVideos();
       setVideos(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unbekannter Fehler beim Laden";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -49,8 +51,10 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
     try {
       await deleteHeroVideo(id);
       setVideos((prev) => prev.filter((v) => v.id !== id));
-    } catch (err: any) {
-      alert("❌ Löschen fehlgeschlagen: " + err.message);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unbekannter Fehler beim Löschen";
+      alert("❌ Löschen fehlgeschlagen: " + message);
     }
   };
 
@@ -73,8 +77,10 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
       });
       setEditingId(null);
       refreshVideos();
-    } catch (err: any) {
-      alert("❌ Update fehlgeschlagen: " + err.message);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unbekannter Fehler beim Update";
+      alert("❌ Update fehlgeschlagen: " + message);
     }
   };
 
@@ -87,15 +93,17 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
           video.id === id ? { ...video, is_active: newState } : video
         )
       );
-    } catch (err: any) {
-      alert("❌ Fehler beim Umschalten");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unbekannter Fehler beim Umschalten";
+      alert("❌ Fehler beim Umschalten: " + message);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
       <div className="relative bg-white rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto p-6 shadow-xl">
         {/* Close button fixed top-right */}
         <button
@@ -111,7 +119,7 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
         {!showUploadForm && (
           <button
             onClick={() => setShowUploadForm(true)}
-            className="mb-4 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+            className="mb-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:opacity-90 shadow-md"
           >
             + Neues Video hochladen
           </button>
@@ -128,7 +136,7 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
             />
             <button
               onClick={() => setShowUploadForm(false)}
-              className="mt-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+              className="mt-2 bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
             >
               Abbrechen
             </button>
@@ -199,13 +207,13 @@ export default function HeroVideoManagerModal({ isOpen, onClose }: Props) {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(video)}
-                        className="bg-blue-200 text-blue-800 px-4 py-1 rounded-lg hover:bg-blue-300"
+                        className="bg-blue-100 text-blue-800 px-4 py-1 rounded-lg hover:bg-blue-200"
                       >
                         Bearbeiten
                       </button>
                       <button
                         onClick={() => handleDelete(video.id)}
-                        className="bg-red-200 text-red-800 px-4 py-1 rounded-lg hover:bg-red-300"
+                        className="bg-red-100 text-red-800 px-4 py-1 rounded-lg hover:bg-red-200"
                       >
                         Löschen
                       </button>
