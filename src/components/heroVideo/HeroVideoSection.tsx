@@ -18,11 +18,13 @@ export default function HeroVideoSection() {
   // Fetch active videos
   const refreshVideos = async () => {
     try {
-      const data = await fetchHeroVideos();
+      const data: HeroVideoType[] = await fetchHeroVideos();
       const activeVideos = data.filter((v) => v.is_active && v.video_url);
       setVideos(activeVideos);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unbekannter Fehler beim Laden";
+      setError(message);
     } finally {
       setLoading(false);
     }

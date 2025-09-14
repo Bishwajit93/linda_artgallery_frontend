@@ -34,9 +34,11 @@ export default function HeroVideoUploadForm({ onUploadSuccess }: Props) {
       setFile(null);
       setIsActive(true);
 
-      if (onUploadSuccess) onUploadSuccess(); // ✅ refresh parent list
-    } catch (err: any) {
-      setError(err.message || "Upload fehlgeschlagen.");
+      if (onUploadSuccess) onUploadSuccess();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Upload fehlgeschlagen.";
+      setError(message);
     } finally {
       setLoading(false);
     }
